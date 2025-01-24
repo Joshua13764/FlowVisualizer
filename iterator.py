@@ -9,7 +9,6 @@ def iterateParticles(particleData : ParticleData, flowData : SimFlowFuncs, setup
 
         # Find new velocities of particles for Cartesian coordinates
         # TODO check if proper Eular conversions
-        print(flowData.vx(*particleData.particlePositions).shape)
         particleData.particleVelocities[0,:] = flowData.vx(*particleData.particlePositions)
         particleData.particleVelocities[1,:] = flowData.vy(*particleData.particlePositions)
 

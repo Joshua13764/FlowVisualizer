@@ -2,9 +2,9 @@ from dataclasses import dataclass
 
 import numpy
 
-from structs import SimFlowFuncs, SimSetupData, ParticleData
+from structs import SimFlowFuncs, SimSetupData, ParticleData, PlottingData
 from iterator import iterateParticles
-from plotter import plotParticles
+from plotter import Plotting
 
 @dataclass
 class Visualizer():
@@ -18,6 +18,9 @@ class Visualizer():
     # The data used to store the particle infomation
     particleData : ParticleData
 
+    # The data used to plot the results
+    plottingData : PlottingData
+
     # Iterate the particles one step in time
     def iterate(self, numbIter = 1):
 
@@ -28,5 +31,7 @@ class Visualizer():
     # Plot the particles currently
     def plot(self):
 
-        plotParticles(self.particleData)
+        plotter = Plotting(self.flowData, self.particleData, self.plottingData)
+        plotter.plotParticles()
+
         
