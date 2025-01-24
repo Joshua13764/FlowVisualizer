@@ -1,32 +1,33 @@
 from dataclasses import dataclass
 
-@dataclass
-class simulationPlotData():
-
-    pass
+import numpy as np
 
 @dataclass
-class simFlowFuncs():
+class SimFlowFuncs():
 
     ## Placeholder variables for the fields (Eulerian specification of the flow field)
 
     # Cartesian coordinates
-    vX = None
-    vY = None
+    vx = None
+    vy = None
 
     # Polar coodinates
     vr = None
     vtheta = None
 
 @dataclass
-class simSetupData():
+class SimSetupData():
 
     ## Simulation variables
 
     timeStep : float
     subtimeSteps = 4
 
-    ## Plotting variables
+@dataclass
+class ParticleData():
 
+    ## Particle positions, velocity, mass (so can add drifing effects)
 
-    
+    particlePositions = np.array([0])
+    particleVelocities = np.array([0])
+    particleMasses = np.array([1])

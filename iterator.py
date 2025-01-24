@@ -1,7 +1,7 @@
 import numpy as np
 
-from structs import simFlowFuncs
+from structs import SimFlowFuncs, ParticleData
 
-def iterateParticles(particleArray : np.array, flowFunctions : simFlowFuncs):
+def iterateParticles(particleData : ParticleData, flowFunctions : SimFlowFuncs):
 
     pass

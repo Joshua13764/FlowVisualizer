@@ -1,15 +1,18 @@
 from dataclasses import dataclass
-from structs import simFlowFuncs, simSetupData
+
 import numpy
+
+from structs import SimFlowFuncs, SimSetupData, ParticleData
 
 @dataclass
 class Visualizer():
 
     # The data used to define the flow
-    flowData : simFlowFuncs
+    flowData : SimFlowFuncs
 
     # The data used to setup how iterations run
-    setupData : simSetupData
+    setupData : SimSetupData
 
-    
+    # The data used to store the particle infomation
 
+    particleData : ParticleData
