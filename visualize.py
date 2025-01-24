@@ -3,6 +3,7 @@ from dataclasses import dataclass
 import numpy
 
 from structs import SimFlowFuncs, SimSetupData, ParticleData
+from iterator import iterateParticles
 
 @dataclass
 class Visualizer():
@@ -15,3 +16,12 @@ class Visualizer():
 
     # The data used to store the particle infomation
     particleData : ParticleData
+
+    # Iterate the particles one step in time
+    def iterate(self, numbIter = 1):
+
+        for i in range(numbIter):
+
+            iterateParticles(self.particleData, self.flowData, self.setupData)
+
+        
