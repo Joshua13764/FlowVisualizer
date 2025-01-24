@@ -43,3 +43,4 @@ class PlottingData():
     brokenStreamlines = False
     # colour = lambda x,y : np.sqrt(x**2 + y**2)
     cmap = 'autumn'
+    backgroundAlpha = 1

@@ -57,34 +57,40 @@ class Plotting():
 
     def plotParticles(self):
 
+        # Pre-calculations
         x, y, u, v = self._getFlowMap()
-
+        flowSpeed = np.sqrt(u**2 + v**2)
+        streamLineWidth = 2 * flowSpeed / np.max(flowSpeed)
         
         # Plot background matrix
-        # plt.matshow(u)
-
+        extent = (self.xMin, self.xMax, self.yMin, self.yMax)
+        plt.matshow(flowSpeed, origin = "lower", extent = extent, alpha = self.plottingData.backgroundAlpha)
         # Plot streamlines
 
         flowSpeed = np.sqrt(u**2 + v**2)
-        streamLineWidth = flowSpeed / np.max(flowSpeed)
+        streamLineWidth = 2 * flowSpeed / np.max(flowSpeed)
 
         stream = plt.streamplot(x, y, u, v,
-            density=0.5,
+            density=1,
             linewidth = streamLineWidth,
-            broken_streamlines=self.plottingData.brokenStreamlines,
-            color=flowSpeed,
-            cmap=self.plottingData.cmap
+            # broken_streamlines=self.plottingData.brokenStreamlines,
+            color="k"
+            # color=flowSpeed,
+            # cmap=self.plottingData.cmap
             )
         
-        plt.colorbar(stream.lines)
+        # plt.colorbar(stream.lines)
 
         # Plot points
-        plt.scatter(*self.particleData.particlePositions)
+        plt.scatter(*self.particleData.particlePositions, marker="s", linewidths = 0.2, c = "g")
 
         # Set plot limits
         plt.xlim(self.xMin, self.xMax)
         plt.ylim(self.yMin, self.yMax)
 
         # Add chart features
-        plt.grid()
+        # plt.grid()
+        plt.colorbar(boundaries = (0, np.max(flowSpeed)))
+        plt.xlabel("x (meters)")
+        plt.ylabel("y (meters)")
         plt.show()
