@@ -19,7 +19,6 @@ class SimFlowFuncs():
 class SimSetupData():
 
     ## Simulation variables
-
     timeStep : float
     subtimeSteps = 4
 
@@ -27,7 +26,6 @@ class SimSetupData():
 class ParticleData():
 
     ## Particle positions, velocity, mass (so can add drifing effects)
-
     particlePositions = np.array([0])
     particleVelocities = np.array([0])
     particleMasses = np.array([1])

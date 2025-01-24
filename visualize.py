@@ -14,5 +14,4 @@ class Visualizer():
     setupData : SimSetupData
 
     # The data used to store the particle infomation
-
     particleData : ParticleData
