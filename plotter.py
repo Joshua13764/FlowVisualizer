@@ -6,4 +6,5 @@ from structs import ParticleData
 def plotParticles(particleData : ParticleData):
 
     plt.scatter(*particleData.particlePositions)
+    plt.grid()
     plt.show()
