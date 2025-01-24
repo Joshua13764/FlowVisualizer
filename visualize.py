@@ -4,6 +4,7 @@ import numpy
 
 from structs import SimFlowFuncs, SimSetupData, ParticleData
 from iterator import iterateParticles
+from plotter import plotParticles
 
 @dataclass
 class Visualizer():
@@ -24,4 +25,8 @@ class Visualizer():
 
             iterateParticles(self.particleData, self.flowData, self.setupData)
 
+    # Plot the particles currently
+    def plot(self):
+
+        plotParticles(self.particleData)
         
