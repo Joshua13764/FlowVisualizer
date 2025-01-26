@@ -107,6 +107,13 @@ class Plotting():
         plt.xlabel(self.plottingData.xLabel)
         plt.ylabel(self.plottingData.yLabel)
         plt.legend()
-        plt.savefig(fname = os.path.join("plots", f"{strftime('%Y-%m-%d %HH%MM%SS', gmtime())}.png"), dpi=800)
+        plt.grid()
+
+        dateHour = strftime('%Y-%m-%d %HH', gmtime())
+        dateHourFolder = os.path.join("plots", dateHour)
+        plotPath = os.path.join("plots", dateHour, f"{strftime('%Y-%m-%d %HH%MM%SS', gmtime())}.png")
+        if not os.path.exists(dateHourFolder): os.makedirs(dateHourFolder)
+
+        plt.savefig(fname =plotPath, dpi=800)
         plt.show()
         
