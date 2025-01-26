@@ -20,7 +20,7 @@ class SimSetupData():
 
     ## Simulation variables
     timeStep : float
-    subtimeSteps = 4
+    subtimeSteps = 32
 
 @dataclass
 class ParticleData():
