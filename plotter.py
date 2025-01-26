@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 from dataclasses import dataclass
+from time import gmtime, strftime
+import os
 
 import numpy as np
 
@@ -16,6 +18,9 @@ class Plotting():
 
     # The data used to aid with plot formatting
     plottingData : PlottingData
+
+    # The time passed in seconds since simulation start
+    timePast : np.float64
 
     # Pre-processing step auto run after init
     def __post_init__(self):
@@ -69,26 +74,27 @@ class Plotting():
         streamLineWidth = 2 * flowSpeed / np.max(flowSpeed)
         
         # Plot background matrix
-        extent = (self.xMin, self.xMax, self.yMin, self.yMax)
-        plt.matshow(flowSpeed, origin = "lower", extent = extent, alpha = self.plottingData.backgroundAlpha)
-        # Plot streamlines
+        # extent = (self.xMin, self.xMax, self.yMin, self.yMax)
+        # plt.matshow(flowSpeed, origin = "lower", extent = extent, alpha = self.plottingData.backgroundAlpha)
 
+        # Plot streamlines
         flowSpeed = np.sqrt(u**2 + v**2)
         streamLineWidth = 2 * flowSpeed / np.max(flowSpeed)
 
         stream = plt.streamplot(x, y, u, v,
             density=1,
             linewidth = streamLineWidth,
-            # broken_streamlines=self.plottingData.brokenStreamlines,
+            broken_streamlines=self.plottingData.brokenStreamlines,
             color="k"
-            # color=flowSpeed,
-            # cmap=self.plottingData.cmap
             )
         
         # plt.colorbar(stream.lines)
 
-        # Plot points
-        plt.scatter(*self.particleData.particlePositions, marker="s", c = "r", s = 0.5)
+        # Plot init points
+        plt.scatter(*self.particleData.particleInitPositions, marker=".", c = "g", s = 0.25, label="Inital dye")
+
+        # Plot time iterated points points
+        plt.scatter(*self.particleData.particlePositions, marker=".", c = "r", s = 0.25, label=f"Dye after {self.timePast}s")
 
         # Set plot limits
         plt.xlim(self.xMin, self.xMax)
@@ -96,7 +102,11 @@ class Plotting():
 
         # Add chart features
         # plt.grid()
-        plt.colorbar(boundaries = (0, np.max(flowSpeed)))
+        # plt.colorbar(boundaries = (0, np.max(flowSpeed)))
+
         plt.xlabel("x (meters)")
         plt.ylabel("y (meters)")
+        plt.legend()
+        plt.savefig(fname = os.path.join("plots", f"{strftime('%Y-%m-%d %HH%MM%SS', gmtime())}.png"), dpi=800)
         plt.show()
+        

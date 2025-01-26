@@ -24,14 +24,20 @@ class Visualizer():
     # Iterate the particles one step in time
     def iterate(self, numbIter = 1):
 
+        # Make record of init particle positions
+        self.particleData.markInitPositions()
+
         for i in range(numbIter):
 
             iterateParticles(self.particleData, self.flowData, self.setupData)
 
+        # Find the time passed in seconds
+        self.timePast = numbIter * self.setupData.timeStep
+
     # Plot the particles currently
     def plot(self):
 
-        plotter = Plotting(self.flowData, self.particleData, self.plottingData)
+        plotter = Plotting(self.flowData, self.particleData, self.plottingData, self.timePast)
         plotter.plotParticles()
 
         

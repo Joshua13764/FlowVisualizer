@@ -30,6 +30,10 @@ class ParticleData():
     particleVelocities = np.array([0])
     particleMasses = np.array([1])
 
+    ## Create the post init vars
+    def markInitPositions(self):
+        self.particleInitPositions = self.particlePositions.copy()
+
     # Giving adding dye functionality
     def __add__(self, other): #  particleData1 + particleData2
 
