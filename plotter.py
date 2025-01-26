@@ -34,23 +34,29 @@ class Plotting():
         Xcoords = np.linspace(
             start = self.xMin,
             stop = self.xMax,
-            num = self.plottingData.flowMapResolution
+            num = self.plottingData.flowMapResolution,
+            dtype = np.float64 # Needed to resolve odd divisions
         )
 
         # Create divisions for the coodinates in y direction
         Ycoords = np.linspace(
             start = self.yMin,
             stop = self.yMax,
-            num = self.plottingData.flowMapResolution
+            num = self.plottingData.flowMapResolution,
+            dtype = np.float64 # Needed to resolve odd divisions
         )
 
         # Create mesh grid
-        xs, ys = np.meshgrid(Xcoords, Ycoords, sparse=True)
-        
+        xs, ys = np.meshgrid(Xcoords, Ycoords)
+
         # Apply meshgird to get U, V matrix
-        # TODO get rid off the term (xs + ys)*0 to improve matrix maths
-        vxs = self.flowData.vx(xs, ys) + (xs + ys)*0
-        vys = self.flowData.vy(xs, ys) + (xs + ys)*0
+        vxs = self.flowData.vx(xs, ys)
+        vys = self.flowData.vy(xs, ys)
+
+        # Clip values to avoid singularities
+        # TODO improve this so dynamic
+        vxs = np.clip(vxs, self.plottingData.minVelocity, self.plottingData.maxVelocity)
+        vys = np.clip(vys, self.plottingData.minVelocity, self.plottingData.maxVelocity)
 
         # Return the calculated values
         return xs, ys, vxs, vys 
@@ -82,7 +88,7 @@ class Plotting():
         # plt.colorbar(stream.lines)
 
         # Plot points
-        plt.scatter(*self.particleData.particlePositions, marker="s", linewidths = 0.2, c = "g")
+        plt.scatter(*self.particleData.particlePositions, marker="s", c = "r", s = 0.5)
 
         # Set plot limits
         plt.xlim(self.xMin, self.xMax)

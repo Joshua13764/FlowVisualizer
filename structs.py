@@ -44,3 +44,5 @@ class PlottingData():
     # colour = lambda x,y : np.sqrt(x**2 + y**2)
     cmap = 'autumn'
     backgroundAlpha = 1
+    maxVelocity = 10
+    minVelocity = -10
