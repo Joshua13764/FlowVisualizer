@@ -20,7 +20,7 @@ class SimSetupData():
 
     ## Simulation variables
     timeStep : float
-    subtimeSteps = 4
+    subtimeSteps = 32
 
 @dataclass
 class ParticleData():
@@ -29,6 +29,38 @@ class ParticleData():
     particlePositions = np.array([0])
     particleVelocities = np.array([0])
     particleMasses = np.array([1])
+
+    # Giving adding dye functionality
+    def __add__(self, other): #  particleData1 + particleData2
+
+        if type(other) != ParticleData: return TypeError
+
+        # Positions
+        self.particlePositions = np.concatenate(
+            (self.particlePositions,
+            other.particlePositions),
+            axis = 1
+        )
+
+        # Velocity
+        self.particleVelocities = np.concatenate(
+            (self.particleVelocities,
+            other.particleVelocities),
+            axis = 1
+        )
+
+        # Masses
+        self.particleMasses = np.concatenate(
+            (self.particleMasses,
+            other.particleMasses),
+            axis = 1
+        )
+
+        return self
+
+    def __iadd__(self, other): #  particleData1 += particleData2
+        
+        return self.__add__(other)
 
 @dataclass
 class PlottingData():
