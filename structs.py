@@ -26,9 +26,9 @@ class SimSetupData():
 class ParticleData():
 
     ## Particle positions, velocity, mass (so can add drifing effects)
-    particlePositions = np.array([0])
-    particleVelocities = np.array([0])
-    particleMasses = np.array([1])
+    particlePositions = np.array([])
+    particleVelocities = np.array([])
+    particleMasses = np.array([])
 
     ## Create the post init vars
     def markInitPositions(self):
@@ -82,3 +82,7 @@ class PlottingData():
     backgroundAlpha = 1
     maxVelocity = 10
     minVelocity = -10
+
+    ## Plotting axis labels
+    xLabel = "x"
+    yLabel = "y"

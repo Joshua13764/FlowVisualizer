@@ -91,10 +91,10 @@ class Plotting():
         # plt.colorbar(stream.lines)
 
         # Plot init points
-        plt.scatter(*self.particleData.particleInitPositions, marker=".", c = "g", s = 0.25, label="Inital dye")
+        plt.scatter(*self.particleData.particleInitPositions, marker=",", c = "g", s = 1, label="Inital dye")
 
         # Plot time iterated points points
-        plt.scatter(*self.particleData.particlePositions, marker=".", c = "r", s = 0.25, label=f"Dye after {self.timePast}s")
+        plt.scatter(*self.particleData.particlePositions, marker=",", c = "r", s = 1, label=f"Dye after {self.timePast}s")
 
         # Set plot limits
         plt.xlim(self.xMin, self.xMax)
@@ -104,9 +104,16 @@ class Plotting():
         # plt.grid()
         # plt.colorbar(boundaries = (0, np.max(flowSpeed)))
 
-        plt.xlabel("x (meters)")
-        plt.ylabel("y (meters)")
+        plt.xlabel(self.plottingData.xLabel)
+        plt.ylabel(self.plottingData.yLabel)
         plt.legend()
-        plt.savefig(fname = os.path.join("plots", f"{strftime('%Y-%m-%d %HH%MM%SS', gmtime())}.png"), dpi=800)
+        plt.grid()
+
+        dateHour = strftime('%Y-%m-%d %HH', gmtime())
+        dateHourFolder = os.path.join("plots", dateHour)
+        plotPath = os.path.join("plots", dateHour, f"{strftime('%Y-%m-%d %HH%MM%SS', gmtime())}.png")
+        if not os.path.exists(dateHourFolder): os.makedirs(dateHourFolder)
+
+        plt.savefig(fname =plotPath, dpi=800)
         plt.show()
         
