@@ -7,13 +7,16 @@ class SimFlowFuncs():
 
     ## Placeholder variables for the fields (Eulerian specification of the flow field)
 
-    # Cartesian coordinates
+    # Cartesian coordinates (in terms of x, y)
     vx = None
     vy = None
 
     # Polar coodinates
     vr = None
     vtheta = None
+
+    # Vector flow function (in terms of x, y, r, theta, xHat, yHat, rHat, thetaHat)
+    v = None
 
 @dataclass
 class SimSetupData():
@@ -29,7 +32,7 @@ class ParticleData():
     particlePositions = np.array([])
     particleVelocities = np.array([])
     particleMasses = np.array([])
-
+    
     ## Create the post init vars
     def markInitPositions(self):
         self.particleInitPositions = self.particlePositions.copy()
@@ -69,19 +72,41 @@ class ParticleData():
 @dataclass
 class PlottingData():
 
+    ## Flags
+
+    # General flags
+    includeGird = False
+    inlcudeLegend = True
+    includeXLabel = True
+    includeYLabel = True
+
+    saveFigure = False
+    showFigure = True
+
+    # Data plotting flags
+    plotInitLine = True
+    plotFinalLine = True
+    plotInitPoints = False
+    plotFinalPoints = False
+
+    ## Save settings
+    plotFolderFormat = "%Y-%m-%d %HH"
+    plotFileFormat = "%Y-%m-%d %HH%MM%SS"
+    plotSaveType = "png"
+
     ## Plot dimentions
     plotSimWidth = 1
     plotSimHeight = 1
     plotCenter = np.array([0,0])
 
-    ## Plot flow map
-    flowMapResolution = 400
+    ## Plot streamlines
+    flowMapResolution = 300
     brokenStreamlines = False
-    # colour = lambda x,y : np.sqrt(x**2 + y**2)
     cmap = 'autumn'
     backgroundAlpha = 1
     maxVelocity = 10
     minVelocity = -10
+    streamLinesPlotDensity = 0.5
 
     ## Plotting axis labels
     xLabel = "x"
