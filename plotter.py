@@ -66,6 +66,20 @@ class Plotting():
         # Return the calculated values
         return xs, ys, vxs, vys 
 
+    # Saves the plot with correct structure
+    def _savePlot(self):
+        
+        # Get path names
+        dateHour = strftime(self.plottingData.plotFolderFormat, gmtime())
+        dateHourFolder = os.path.join("plots", dateHour)
+        plotPath = os.path.join("plots", dateHour, f"{strftime(self.plottingData.plotFileFormat, gmtime())}.{self.plottingData.plotSaveType}")
+        
+        # Check plot path exists (if not make it)
+        if not os.path.exists(dateHourFolder): os.makedirs(dateHourFolder)
+
+        # Save the plot
+        plt.savefig(fname = plotPath, dpi = 800)
+
     def plotParticles(self):
 
         # Pre-calculations
@@ -79,7 +93,7 @@ class Plotting():
 
         # Plot streamlines
         flowSpeed = np.sqrt(u**2 + v**2)
-        streamLineWidth = 2 * flowSpeed / np.max(flowSpeed)
+        streamLineWidth = 0.75 * flowSpeed / np.max(flowSpeed)
 
         stream = plt.streamplot(x, y, u, v,
             density=1,
@@ -88,32 +102,32 @@ class Plotting():
             color="k"
             )
         
-        # plt.colorbar(stream.lines)
+        # Plotting the line data
+        if self.plottingData.plotInitLine:
+            plt.plot(*self.particleData.particleInitPositions, label=f"Inital dye")
 
-        # Plot init points
-        plt.scatter(*self.particleData.particleInitPositions, marker=",", c = "g", s = 1, label="Inital dye")
+        if self.plottingData.plotFinalLine:
+            plt.plot(*self.particleData.particlePositions, label=f"Dye line after {self.timePast}s")
 
-        # Plot time iterated points points
-        plt.scatter(*self.particleData.particlePositions, marker=",", c = "r", s = 1, label=f"Dye after {self.timePast}s")
+        # Plotting the scattering data
+        if self.plottingData.plotInitPoints:
+            plt.scatter(*self.particleData.particleInitPositions, marker=",", c = "g", s = 1, label="Inital dye")
 
+        if self.plottingData.plotFinalPoints:
+            plt.scatter(*self.particleData.particlePositions, marker=",", c = "r", s = 1, label=f"Dye after {self.timePast}s")
+
+        # Setting general plot data
         # Set plot limits
         plt.xlim(self.xMin, self.xMax)
         plt.ylim(self.yMin, self.yMax)
 
-        # Add chart features
-        # plt.grid()
-        # plt.colorbar(boundaries = (0, np.max(flowSpeed)))
+        # Setup plot features
+        if self.plottingData.includeGird: plt.grid()
+        if self.plottingData.inlcudeLegend: plt.legend()
+        if self.plottingData.includeXLabel: plt.xlabel(self.plottingData.xLabel)
+        if self.plottingData.includeYLabel: plt.ylabel(self.plottingData.yLabel)
 
-        plt.xlabel(self.plottingData.xLabel)
-        plt.ylabel(self.plottingData.yLabel)
-        plt.legend()
-        plt.grid()
-
-        dateHour = strftime('%Y-%m-%d %HH', gmtime())
-        dateHourFolder = os.path.join("plots", dateHour)
-        plotPath = os.path.join("plots", dateHour, f"{strftime('%Y-%m-%d %HH%MM%SS', gmtime())}.png")
-        if not os.path.exists(dateHourFolder): os.makedirs(dateHourFolder)
-
-        plt.savefig(fname =plotPath, dpi=800)
-        plt.show()
+        # Save and showing plot settings
+        if self.plottingData.saveFigure: self._savePlot()
+        if self.plottingData.showFigure: plt.show()
         
