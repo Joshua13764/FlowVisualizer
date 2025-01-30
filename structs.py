@@ -7,13 +7,16 @@ class SimFlowFuncs():
 
     ## Placeholder variables for the fields (Eulerian specification of the flow field)
 
-    # Cartesian coordinates
+    # Cartesian coordinates (in terms of x, y)
     vx = None
     vy = None
 
     # Polar coodinates
     vr = None
     vtheta = None
+
+    # Vector flow function (in terms of x, y, r, theta, xHat, yHat, rHat, thetaHat)
+    v = None
 
 @dataclass
 class SimSetupData():
@@ -96,14 +99,14 @@ class PlottingData():
     plotSimHeight = 1
     plotCenter = np.array([0,0])
 
-    ## Plot flow map
-    flowMapResolution = 4000
+    ## Plot streamlines
+    flowMapResolution = 300
     brokenStreamlines = False
-    # colour = lambda x,y : np.sqrt(x**2 + y**2)
     cmap = 'autumn'
     backgroundAlpha = 1
     maxVelocity = 10
     minVelocity = -10
+    streamLinesPlotDensity = 0.5
 
     ## Plotting axis labels
     xLabel = "x"
