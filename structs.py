@@ -29,8 +29,8 @@ class SimSetupData():
 class ParticleData():
 
     ## Particle positions, velocity, mass (so can add drifing effects)
-    particlePositions = np.array([])
-    particleVelocities = np.array([])
+    particlePositions = np.array([[],[]])
+    particleVelocities = np.array([[],[]])
     particleMasses = np.array([])
 
     # Array of the index of the first particle in a shape used to draw the shapes correctly
@@ -44,6 +44,12 @@ class ParticleData():
     def __add__(self, other): #  particleData1 + particleData2
 
         if type(other) != ParticleData: return TypeError
+
+        # If no items in self then set self to the added item
+        if self.particlePositions.size == 0: self = other
+
+        # If no items in other then no effect
+        if other.particlePositions.size == 0: return self
 
         # Positions
         self.particlePositions = np.concatenate(

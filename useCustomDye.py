@@ -4,80 +4,118 @@ from structs import ParticleData
 import numpy as np
 
 @dataclass
-class LineDye():
+class Dye():
 
-    lineStart : np.array
-    lineEnd : np.array
-    lineParticles : np.int64
-    particleMass : np.float64
+    particlesData = ParticleData()
 
-    def getParticleData(self) -> ParticleData:
+    # Private method to get a particle data object with data for a line of dye
+    def _getLineDye(self,
+            lineStart : np.array,
+            lineEnd : np.array,
+            lineParticles : np.int64,
+            particleMass : np.float64) -> ParticleData:
 
         # Define particle data
         particleData = ParticleData()
 
         # Set particle values
-        particleData.particlePositions = np.linspace(self.lineStart, self.lineEnd, self.lineParticles).T
-        particleData.particleVelocities = np.zeros((2, self.lineParticles))
-        particleData.particleMasses = np.zeros((2, self.lineParticles))
+        particleData.particlePositions = np.linspace(lineStart, lineEnd, lineParticles).T
+        particleData.particleVelocities = np.zeros((2, lineParticles))
+        particleData.particleMasses = np.zeros((2, lineParticles))
 
-        # return particle data
+        # Return the created particle data
         return particleData
 
-@dataclass
-class RectangleDye():
-
-    height : np.float64
-    width : np.float64
-    center : np.array
-    shapeParticles : np.int64
-    particleMass : np.float64
-
-    def __post_init__(self):
-
+    # Private method to get a particle data object with data for a rectangle of dye
+    def _getRectangleDye(self,
+            height : np.float64,
+            width : np.float64,
+            center : np.array,
+            shapeParticles : np.int64,
+            particleMass : np.float64) -> ParticleData:
+        
         # Corners in clockwise formation starting from the bottom left 
-
-        self.bottomLeft = self.center + np.array([- self.height, - self.width]) * 0.5
-        self.topLeft = self.center + np.array([self.height, - self.width]) * 0.5
-        self.topRight = self.center + np.array([self.height, self.width]) * 0.5
-        self.bottomRight = self.center + np.array([- self.height, self.width]) * 0.5
-
-    def getParticleData(self) -> ParticleData:
+        bottomLeft = center + np.array([- height, - width]) * 0.5
+        topLeft = center + np.array([height, - width]) * 0.5
+        topRight = center + np.array([height, width]) * 0.5
+        bottomRight = center + np.array([- height, width]) * 0.5
 
         # Loop through verticies
-        particleData = LineDye(self.bottomLeft, self.topLeft, self.shapeParticles // 4, self.particleMass).getParticleData()
-        particleData += LineDye(self.topLeft, self.topRight, self.shapeParticles // 4, self.particleMass).getParticleData()
-        particleData += LineDye(self.topRight, self.bottomRight, self.shapeParticles // 4, self.particleMass).getParticleData()
-        particleData += LineDye(self.bottomRight, self.bottomLeft, self.shapeParticles // 4, self.particleMass).getParticleData()
+        particleData = self._getLineDye(bottomLeft, topLeft, shapeParticles // 4, particleMass)
+        particleData += self._getLineDye(topLeft, topRight, shapeParticles // 4, particleMass)
+        particleData += self._getLineDye(topRight, bottomRight, shapeParticles // 4, particleMass)
+        particleData += self._getLineDye(bottomRight, bottomLeft, shapeParticles // 4, particleMass)
 
-        # return particle data
+        # Return the created particle data
         return particleData
 
-@dataclass
-class CircleDye():
-
-    circleCenter : np.array
-    circleRadius : np.float64
-    shapeParticles : np.int64
-    particleMass : np.float64
-
-    def getParticleData(self) -> ParticleData:
-
+    # Private method to get a particle data object with data for a circle of dye
+    def _getCircleDye(self,
+            circleCenter : np.array,
+            circleRadius : np.float64,
+            shapeParticles : np.int64,
+            particleMass : np.float64) -> ParticleData:
+        
         # Define particle data
         particleData = ParticleData()
 
         # Create points evenly as a function of theta
-        evenPoints = np.linspace(0, 2 * np.pi, self.shapeParticles)
+        evenPoints = np.linspace(0, 2 * np.pi, shapeParticles)
 
         # Distorbute these points around a circle
         particleData.particlePositions = np.row_stack(
-            (self.circleRadius * np.cos(evenPoints) + self.circleCenter[0],
-            self.circleRadius * np.sin(evenPoints) + self.circleCenter[1])
+            (circleRadius * np.cos(evenPoints) + circleCenter[0],
+            circleRadius * np.sin(evenPoints) + circleCenter[1])
         )
 
         # Set other particle values
-        particleData.particleVelocities = np.zeros((2, self.shapeParticles))
-        particleData.particleMasses = np.zeros((2, self.shapeParticles))
+        particleData.particleVelocities = np.zeros((2, shapeParticles))
+        particleData.particleMasses = np.zeros((2, shapeParticles))
 
-        # return particle data
+        # Return the created particle data
         return particleData
+    
+    # Returns the particle data
+    def getParticleData(self):
+        return self.particlesData
+
+    # Add a line dye to the particles data
+    def lineDye(self,
+            lineStart : np.array,
+            lineEnd : np.array,
+            lineParticles : np.int64,
+            particleMass : np.float64) -> None:
+        self.particlesData += self._getLineDye(
+            lineStart,
+            lineEnd,
+            lineParticles,
+            particleMass
+        )
+
+    # Add a rectangle dye the particles data
+    def rectangleDye(self,
+            height : np.float64,
+            width : np.float64,
+            center : np.array,
+            shapeParticles : np.int64,
+            particleMass : np.float64) -> None:
+        self.particlesData += self._getRectangleDye(
+            height,
+            width,
+            center,
+            shapeParticles,
+            particleMass
+        )
+
+    # Add a circle dye the particles data
+    def circleDye(self,
+            circleCenter : np.array,
+            circleRadius : np.float64,
+            shapeParticles : np.int64,
+            particleMass : np.float64) -> None:
+        self.particlesData += self._getCircleDye(
+            circleCenter,
+            circleRadius,
+            shapeParticles,
+            particleMass
+        )

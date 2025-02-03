@@ -4,21 +4,21 @@ import visualize
 
 # Define the flow
 flowData = visualize.SimFlowFuncs()
-flowData.vx = lambda x, y : x + 2 * y # (y + 0.001) / np.sqrt(x**2 + y**2)
-flowData.vy = lambda x, y : - y # - (x + 0.001) / np.sqrt(x**2 + y**2)
+flowData.v = lambda x,y,xHat,yHat, r,theta,rHat,thetaHat : thetaHat / np.linalg.norm(r)
 
 # Define the dye to put into the fluid
-from useCustomDye import RectangleDye, CircleDye
+from useCustomDye import Dye
 
-particleData = RectangleDye(0.2, 0.2, np.array([0,0]), 10000, 0).getParticleData()
-particleData += RectangleDye(0.2, 0.2, np.array([0.2,0.3]), 10000, 0).getParticleData()
-particleData += CircleDye(np.array([-0.2, -0.3]), 0.1, 10000, 0).getParticleData()
+dye = Dye()
+dye.rectangleDye(0.2, 0.2, np.array([0,0]), 10000, 0)
+dye.rectangleDye(0.2, 0.2, np.array([0.2,0.3]), 10000, 0)
+dye.circleDye(np.array([-0.2, -0.3]), 0.1, 10000, 0)
 
 # Setup the flow sim object
 flowSim = visualize.Visualizer(
     setupData = visualize.SimSetupData(timeStep=0.01),
     flowData = flowData,
-    particleData = particleData,
+    particleData = dye.getParticleData(),
     plottingData = visualize.PlottingData()
 )
 
