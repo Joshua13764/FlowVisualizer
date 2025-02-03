@@ -32,6 +32,9 @@ class ParticleData():
     particlePositions = np.array([])
     particleVelocities = np.array([])
     particleMasses = np.array([])
+
+    # Array of the index of the first particle in a shape used to draw the shapes correctly
+    shapeStarts = []
     
     ## Create the post init vars
     def markInitPositions(self):
@@ -63,6 +66,10 @@ class ParticleData():
             axis = 1
         )
 
+        # Shape starts
+        shapeStartOffset = len(self.shapeStarts) - 1
+        self.shapeStarts += [shapeStart + shapeStartOffset for shapeStart in other.shapeStarts]
+
         return self
 
     def __iadd__(self, other): #  particleData1 += particleData2
@@ -84,10 +91,10 @@ class PlottingData():
     showFigure = True
 
     # Data plotting flags
-    plotInitLine = True
-    plotFinalLine = True
-    plotInitPoints = False
-    plotFinalPoints = False
+    plotInitLine = False
+    plotFinalLine = False
+    plotInitPoints = True
+    plotFinalPoints = True
 
     ## Save settings
     plotFolderFormat = "%Y-%m-%d %HH"
