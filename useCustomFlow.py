@@ -37,8 +37,8 @@ class Flow():
             offsetR = lambda r, theta, xOff, yOff : np.sqrt(
                 (r * np.cos(theta) + xOff) ** 2 + (r * np.sin(theta) + yOff) ** 2
             )
-            offsetTheta = lambda r, theta, xOff, yOff : np.arctan(
-                (r * np.sin(theta) + yOff) / (r * np.cos(theta) + xOff)
+            offsetTheta = lambda r, theta, xOff, yOff : np.arctan2(
+                (r * np.sin(theta) + yOff),(r * np.cos(theta) + xOff)
             )
 
             self.flowFunctions["polarFlow"].append({

@@ -9,7 +9,7 @@ flow = Flow()
 # flow.cartesianFlow(lambda x, y : - x, lambda x, y : y, (0.5, 0.5))
 # flow.cartesianFlow(lambda x, y : - y, lambda x, y : x, (0, 0))
 
-flow.polarFlow(lambda r, theta : r, lambda r, theta : 0 * r)
+flow.polarFlow(lambda r, theta : r, lambda r, theta : r * 0 + 1)
 
 # Define the dye to put into the fluid
 from useCustomDye import Dye

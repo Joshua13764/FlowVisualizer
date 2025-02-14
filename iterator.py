@@ -6,13 +6,13 @@ from structs import SimFlowFuncs, ParticleData, SimSetupData
 # Helper functions
 _posToPol = lambda x, y : [
             np.sqrt(x ** 2 + y ** 2),
-            np.arctan(y / x)
+            np.arctan2(y, x)
         ]
 
 def _polVeltoCartVel(x, y, vr, vtheta):
 
     r = np.sqrt(x ** 2 + y ** 2)
-    theta = np.arctan(y / x)
+    theta = np.arctan2(y, x)
 
     return [
         vr * np.cos(theta) - r * vtheta * np.sin(theta),
@@ -71,15 +71,9 @@ def getVelocitiesFromPositionsCartConverted(postions : np.array, flowData : SimF
         flowData = flowData
     )
 
-    print(cartParticleVelocities)
-    print(polarParticleVelocities)
-    print(np.min(polarParticleVelocities[0]))
-
     # Get overall velocities
     particleVelocities = cartParticleVelocities
     particleVelocities += _polVeltoCartVel(*postions, *polarParticleVelocities)
-
-    print(particleVelocities)
 
     return particleVelocities
 
