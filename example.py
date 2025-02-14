@@ -9,7 +9,7 @@ flow = Flow()
 # flow.cartesianFlow(lambda x, y : - x, lambda x, y : y, (0.5, 0.5))
 # flow.cartesianFlow(lambda x, y : - y, lambda x, y : x, (0, 0))
 
-flow.polarFlow(lambda r, theta : r, lambda r, theta : r * 0 + 1)
+flow.polarFlow(lambda r, theta : r * 0, lambda r, theta : 1 / r)
 
 # Define the dye to put into the fluid
 from useCustomDye import Dye
@@ -22,7 +22,7 @@ dye.lineDye(np.array([0,-1]), np.array([0,1]), 10000, 0)
 
 # Setup the flow sim object
 flowSim = visualize.Visualizer(
-    setupData = visualize.SimSetupData(timeStep=0.01),
+    setupData = visualize.SimSetupData(timeStep=0.05),
     flowData = flow.getSimFlowFunc(),
     particleData = dye.getParticleData(),
     plottingData = visualize.PlottingData()

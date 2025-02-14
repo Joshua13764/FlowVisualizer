@@ -9,6 +9,11 @@ _posToPol = lambda x, y : [
             np.arctan2(y, x)
         ]
 
+_polToPos = lambda r, theta : np.array([
+    r * np.cos(theta),
+    r * np.sin(theta)
+])
+
 def _polVeltoCartVel(x, y, vr, vtheta):
 
     r = np.sqrt(x ** 2 + y ** 2)
@@ -95,7 +100,10 @@ def iterateParticles(particleData : ParticleData, flowData : SimFlowFuncs, setup
         if flowData.vr and flowData.vtheta: # Use if for performance
             particlePositionsPolar = _posToPol(*particleData.particlePositions)
             particlePositionsPolar += polarParticleVelocities * ( setupData.timeStep / setupData.subtimeSteps)
+            particleData.particlePositions = _polToPos(*particlePositionsPolar)
 
         # Get overall velocities
         particleData.particleVelocities = cartParticleVelocities
-        particleData.particleVelocities += _polVeltoCartVel(*particleData.particlePositions, *polarParticleVelocities)
+
+        if flowData.vr and flowData.vtheta: # Use if for performance
+            particleData.particleVelocities += _polVeltoCartVel(*particleData.particlePositions, *polarParticleVelocities)
