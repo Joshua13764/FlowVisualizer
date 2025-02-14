@@ -108,8 +108,8 @@ class PlottingData():
     plotSaveType = "png"
 
     ## Plot dimentions
-    plotSimWidth = 1
-    plotSimHeight = 1
+    plotSimWidth = 4
+    plotSimHeight = 4
     plotCenter = np.array([0,0])
 
     ## Plot streamlines
