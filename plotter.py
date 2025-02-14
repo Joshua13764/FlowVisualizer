@@ -6,7 +6,7 @@ import os
 import numpy as np
 
 from structs import ParticleData, SimFlowFuncs, PlottingData
-from iterator import getVelocitiesFromPositions
+from iterator import getVelocitiesFromPositionsCartConverted
 
 @dataclass
 class Plotting():
@@ -60,7 +60,7 @@ class Plotting():
         ys = ysMatrix.flatten()
 
         # Apply meshgird points to get U, V matrix
-        vxs, vys = getVelocitiesFromPositions(
+        vxs, vys = getVelocitiesFromPositionsCartConverted(
             postions = np.array([xs, ys]),
             flowData = self.flowData
         )
