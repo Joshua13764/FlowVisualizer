@@ -63,6 +63,37 @@ class Flow():
                 "vtheta" : lambda r, theta : relativeFlowFunctionTheta(r, theta)
                 })
 
+    def streamFunctionFlow(self, streamFunction, functionOffset = None):
+        # Adds a flow using a stream function
+
+        compute_gradientX = lambda f, x, y, h=1e-5 : (f(x + h, y) - f(x - h, y)) / (2 * h)
+        compute_gradientY = lambda f, x, y, h=1e-5 : (f(x, y + h) - f(x, y - h)) / (2 * h)
+        
+        if functionOffset:
+
+            self.flowFunctions["cartesianFlow"].append({
+                    "vx" : lambda x, y : compute_gradientY(streamFunction, x - functionOffset[0], y - functionOffset[1]),
+                    "vy" : lambda x, y : - compute_gradientX(streamFunction, x - functionOffset[0], y - functionOffset[1])
+                    })
+
+        else:
+
+            self.flowFunctions["cartesianFlow"].append({
+                    "vx" : lambda x, y : compute_gradientY(streamFunction, x, y),
+                    "vy" : lambda x, y : - compute_gradientX(streamFunction, x, y)
+                    })
+
+            
+
+
+
+    # def complexPotential(complexPotentialFunction):
+    #     # A complex potentail is such that the vx - ivy = d_z complexPotentialFunction
+    #     # Since the complex potential function is a function of a single complex coodinate z
+    #     # The imaginary part of the complex potential function is the stream function
+    #     # which describes z = x + iy
+
+
     def getSimFlowFunc(self):
 
         simFlow = SimFlowFuncs()
