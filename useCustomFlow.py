@@ -83,7 +83,17 @@ class Flow():
                     "vy" : lambda x, y : - compute_gradientX(streamFunction, x, y)
                     })
 
-            
+    def complexPotentialFlow(self, complexPotential, functionOffset = None):
+        # complexPotential is a function of z = x + iy
+
+        # complex(x, y) = x + iy
+
+        self.streamFunctionFlow(
+            streamFunction = lambda x, y : np.imag(complexPotential(x + y * 1j)),
+            functionOffset = functionOffset
+        )
+
+
 
 
 
