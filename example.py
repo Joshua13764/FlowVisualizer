@@ -6,18 +6,23 @@ import visualize
 from useCustomFlow import Flow
 flow = Flow()
 
-flow.cartesianFlow(lambda x, y : - x, lambda x, y : y, (0.5, 0.5))
-# # flow.cartesianFlow(lambda x, y : - y, lambda x, y : x, (0, 0))
+# flow.cartesianFlow(lambda x, y : - x, lambda x, y : y, (0.5, 0.5))
+# flow.cartesianFlow(lambda x, y : - y, lambda x, y : x, (0, 0))
 
 # flow.polarFlow(lambda r, theta : r * 0, lambda r, theta : 1 / r)
 
 # flow.streamFunctionFlow(lambda x, y : x * y)
+ 
+flow.complexPotentialFlow(lambda z : - np.log(z) / 1j, functionOffset=(-1, 0))
+flow.complexPotentialFlow(lambda z : np.log(z) / 1j, functionOffset=(-1, -4))
+flow.complexPotentialFlow(lambda z : np.log(z) / 1j, functionOffset=(1, 0))
+flow.complexPotentialFlow(lambda z : - np.log(z) / 1j, functionOffset=(1, -4))
 
 # Define the dye to put into the fluid
 from useCustomDye import Dye
 
 dye = Dye()
-dye.lineDye(np.array([0,-1]), np.array([0,1]), 10000, 0)
+# dye.lineDye(np.array([0,-1]), np.array([0,1]), 10000, 0)
 # dye.rectangleDye(0.2, 0.2, np.array([0,0]), 10000, 0)
 # dye.rectangleDye(0.2, 0.2, np.array([0.2,0.3]), 10000, 0)
 # dye.circleDye(np.array([-0.2, -0.3]), 0.1, 10000, 0)
