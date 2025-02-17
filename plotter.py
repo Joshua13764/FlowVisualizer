@@ -95,23 +95,49 @@ class Plotting():
 
         ## Setting up how streamlines are plotted
 
+        # Some pre-calculation functions
+
+        # Returns the magnitude of the curl of the flow
+        _getCurlFromFlow = lambda flowX, flowY, max = 1e6 : np.clip(0, max, np.abs(
+            np.gradient(flowX, axis=0) - np.gradient(flowY, axis=1)))
+        
+        # Returns the divergence of the flow
+        _getDivFromFlow = lambda flowX, flowY, max = 1e6, min = -1e6 : np.clip(min, max,
+            np.gradient(flowX, axis=0) + np.gradient(flowY, axis=1))
+        
+        # Returns the magnitude of the speed from the flow
+        _getSpeedFromFlow = lambda flowX, flowY, max = 1e6 : np.clip(0, max,
+            np.sqrt(flowX ** 2 + flowY ** 2))
+        
+        # Rescales a set of values to between 0 and 1 linearly
+        _rescaleLinearColour = lambda values : (values - np.min(values)) / (np.max(values) - np.min(values))
+
         # Pre-calculations
         x, y, u, v = self._getFlowMap()
-        flowSpeed = np.sqrt(u**2 + v**2)
-        streamLineWidth = 2 * flowSpeed / np.max(flowSpeed)
 
-        # Finding flow speeds
-        flowSpeed = np.sqrt(u**2 + v**2)
-        streamLineWidth = 0.75 * flowSpeed / np.max(flowSpeed)
+        # Finding flow data
+        flowSpeed = _getSpeedFromFlow(u, v)
+        flowDiv = _getDivFromFlow(u, v)
+        flowCurl = _getCurlFromFlow(u, v)
+
+        # flowSpeed = _rescaleLinearColour(flowSpeed)
+        # flowDiv = _rescaleLinearColour(flowDiv)
+        # flowCurl = _rescaleLinearColour(flowCurl)
+
+        # colour = np.stack((flowSpeed, flowDiv, np.ones_like(flowSpeed)), axis=-1)
 
         # Plotting streamlines
         stream = plt.streamplot(x, y, u, v,
-            density=self.plottingData.streamLinesPlotDensity,
-            linewidth = streamLineWidth,
-            broken_streamlines=self.plottingData.brokenStreamlines,
-            color="k"
+            # density=self.plottingData.streamLinesPlotDensity,
+            # linewidth = streamLineWidth,
+            color = flowSpeed,
+            broken_streamlines= False,
+            cmap='plasma', linewidth=1, arrowstyle='->', density=1.2 / 2
             )
         
+
+        # plt.imshow(flowSpeed, extent=(-2, 2, -2, 2), origin='lower', alpha=1)
+
         # Setting how points are plotted
         
         # Plotting the line data
@@ -136,7 +162,7 @@ class Plotting():
 
         # Setup plot features
         if self.plottingData.includeGird: plt.grid()
-        if self.plottingData.inlcudeLegend: plt.legend()
+        if self.plottingData.inlcudeLegend and len(self.particleData.particlePositions) != 0: plt.legend()
         if self.plottingData.includeXLabel: plt.xlabel(self.plottingData.xLabel)
         if self.plottingData.includeYLabel: plt.ylabel(self.plottingData.yLabel)
 

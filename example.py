@@ -6,7 +6,7 @@ import visualize
 from useCustomFlow import Flow
 flow = Flow()
 
-# flow.cartesianFlow(lambda x, y : - x, lambda x, y : y, (0.5, 0.5))
+# flow.cartesianFlow(lambda x, y : - x ** 2, lambda x, y : y * x ** 2, (0.5, 0.5))
 # flow.cartesianFlow(lambda x, y : - y, lambda x, y : x, (0, 0))
 
 # flow.polarFlow(lambda r, theta : r * 0, lambda r, theta : 1 / r)

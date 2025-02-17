@@ -113,9 +113,8 @@ class PlottingData():
     plotCenter = np.array([0,0])
 
     ## Plot streamlines
-    flowMapResolution = 300
+    flowMapResolution = 2048
     brokenStreamlines = False
-    cmap = 'autumn'
     backgroundAlpha = 1
     maxVelocity = 10
     minVelocity = -10
