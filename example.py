@@ -22,7 +22,7 @@ flow.complexPotentialFlow(lambda z: - np.log(z) / 1j, functionOffset=(1, -4))
 # Define the dye to put into the fluid
 
 dye = Dye()
-# dye.lineDye(np.array([0,-1]), np.array([0,1]), 10000, 0)
+dye.lineDye(np.array([1, -1]), np.array([-1, 1]), 1000, 0)
 # dye.rectangleDye(0.2, 0.2, np.array([0,0]), 10000, 0)
 # dye.rectangleDye(0.2, 0.2, np.array([0.2,0.3]), 10000, 0)
 # dye.circleDye(np.array([-0.2, -0.3]), 0.1, 10000, 0)
@@ -37,4 +37,4 @@ flowSim = visualize.Visualizer(
 
 # Simulate the flow
 flowSim.iterate(numIter=20)
-flowSim.plot()
+flowSim.plot(interactive=True)

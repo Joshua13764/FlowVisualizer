@@ -91,6 +91,7 @@ def getVelocitiesFromPositionsCartConverted(postions: np.array, flowData: SimFlo
 
     return particleVelocities
 
+
 def iterateParticles(particleData: ParticleData, flowData: SimFlowFuncs, setupData: SimSetupData):
 
     new_positions = particleData.positions[-1].copy()
