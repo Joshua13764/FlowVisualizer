@@ -1,3 +1,4 @@
+from useCustomDye import Dye
 import numpy as np
 
 import visualize
@@ -12,14 +13,13 @@ flow = Flow()
 # flow.polarFlow(lambda r, theta : r * 0, lambda r, theta : 1 / r)
 
 # flow.streamFunctionFlow(lambda x, y : x * y)
- 
-flow.complexPotentialFlow(lambda z : - np.log(z) / 1j, functionOffset=(-1, 0))
-flow.complexPotentialFlow(lambda z : np.log(z) / 1j, functionOffset=(-1, -4))
-flow.complexPotentialFlow(lambda z : np.log(z) / 1j, functionOffset=(1, 0))
-flow.complexPotentialFlow(lambda z : - np.log(z) / 1j, functionOffset=(1, -4))
+
+flow.complexPotentialFlow(lambda z: - np.log(z) / 1j, functionOffset=(-1, 0))
+flow.complexPotentialFlow(lambda z: np.log(z) / 1j, functionOffset=(-1, -4))
+flow.complexPotentialFlow(lambda z: np.log(z) / 1j, functionOffset=(1, 0))
+flow.complexPotentialFlow(lambda z: - np.log(z) / 1j, functionOffset=(1, -4))
 
 # Define the dye to put into the fluid
-from useCustomDye import Dye
 
 dye = Dye()
 # dye.lineDye(np.array([0,-1]), np.array([0,1]), 10000, 0)
@@ -29,12 +29,12 @@ dye = Dye()
 
 # Setup the flow sim object
 flowSim = visualize.Visualizer(
-    setupData = visualize.SimSetupData(timeStep=0.05),
-    flowData = flow.getSimFlowFunc(),
-    particleData = dye.getParticleData(),
-    plottingData = visualize.PlottingData()
+    setupData=visualize.SimSetupData(timeStep=0.05),
+    flowData=flow.getSimFlowFunc(),
+    particleData=dye.getParticleData(),
+    plottingData=visualize.PlottingData()
 )
 
 # Simulate the flow
-flowSim.iterate(numbIter=20)
+flowSim.iterate(numIter=20)
 flowSim.plot()
