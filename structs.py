@@ -36,14 +36,35 @@ class ParticleData():
     velocities = np.array([[], []])
     masses = np.array([])
 
+    # Store the past positions of the particles
+    positionHistory = []
+
     # Array of the index of the first particle in a shape used to draw the shapes correctly
     shapeStarts = []
 
-    def positionsAtTime(self, index: int, visualizer: object):
-        if index >= self.positions.shape[1]:
-            # We havent yet reached this point, need to calculate the positions at that time
-            visualizer.iterate(numIter=index - self.positions.shape[1] + 2)
-        return self.positions[index]
+    # Positions at time finds the position of a particle for a given time
+    def positionsAtTime(self, iterationIndex: float):
+
+        # TODO make so renders more if needed
+        # Check that not accsessing iterations that don't exist
+        if iterationIndex >= len(self.positionHistory):
+            raise ValueError(
+                "Iteration index exceeds what is currently rendered")
+
+        # Find bounding indices
+        floorIndex = int(np.floor(iterationIndex))
+        ceilIndex = int(np.ceil(iterationIndex))
+
+        # Find bounding positions
+        floorPositions = self.positionHistory[floorIndex]
+        ceilPositions = self.positionHistory[ceilIndex]
+
+        # Find interp positions
+        frac, integer = np.modf(iterationIndex)
+        interpPos = floorPositions * frac + (1 - frac) * ceilPositions
+
+        # Return the interp positions
+        return interpPos
 
     def timePast(self):
         return self.positions.shape[1]

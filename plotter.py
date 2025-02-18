@@ -103,13 +103,10 @@ class Plotting():
     def plotInteractiveParticles(self, streamlineWidth=2, args: dict = {}):
 
         # Functions used for the interactive plotter
-        def f_x(time):
-            return self.particleData.positionsAtTime(int(time // args['timeStep']), args['visualizer'])[0]
-
-        def f_y(_, time):
-            return self.particleData.positionsAtTime(int(time // args['timeStep']), args['visualizer'])[1]
-
-        # Setting up how streamlines are plotted
+        def f_x(time): return self.particleData.positionsAtTime(
+            time / args['timeStep'])[0]
+        def f_y(_, time): return self.particleData.positionsAtTime(
+            time / args['timeStep'])[1]
 
         # Pre-calculations
         x, y, v_x, v_y = self._getFlowMap()
@@ -145,8 +142,8 @@ class Plotting():
 
         if self.plottingData.plotFinalLine:
             controls = iplt.plot(f_x, f_y,
-                                    label=f"Dye line after {self.particleData.timePast()}s",
-                                    time=slider, ax=ax)
+                                 label=f"Dye line after {self.particleData.timePast()}s",
+                                 time=slider, ax=ax)
 
         # Plotting the scattering data
         if self.plottingData.plotInitPoints:
@@ -181,7 +178,6 @@ class Plotting():
         if self.plottingData.showFigure:
             plt.show()
 
-
     def plotParticles(self, streamlineWidth=2):
 
         # Setting up how streamlines are plotted
@@ -210,7 +206,7 @@ class Plotting():
 
         if self.plottingData.plotFinalLine:
             plt.plot(*self.particleData.positions[-1],
-                        label=f"Dye line after {self.particleData.timePast()}s")
+                     label=f"Dye line after {self.particleData.timePast()}s")
 
         # Plotting the scattering data
         if self.plottingData.plotInitPoints:

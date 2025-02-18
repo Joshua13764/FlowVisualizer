@@ -126,3 +126,6 @@ def iterateParticles(particleData: ParticleData, flowData: SimFlowFuncs, setupDa
     particleData.positions = np.append(particleData.positions,
                                        np.expand_dims(new_positions, axis=0),
                                        axis=0)
+
+    # Append the particle data to history
+    particleData.positionHistory.append(new_positions)

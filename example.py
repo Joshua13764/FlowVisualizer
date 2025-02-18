@@ -36,5 +36,5 @@ flowSim = visualize.Visualizer(
 )
 
 # Simulate the flow
-flowSim.iterate(numIter=20)
-flowSim.plot(interactive=False)
+flowSim.iterate(numIter=100)
+flowSim.plot(interactive=True)

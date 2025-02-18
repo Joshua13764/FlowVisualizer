@@ -40,7 +40,6 @@ class Visualizer():
     def plot(self, interactive=False):
         if interactive:
             self.plotter.plotInteractiveParticles(args={'interactive': True,
-                                             'timeStep': self.setupData.timeStep,
-                                             'visualizer': self})
+                                                        'timeStep': self.setupData.timeStep})
         else:
             self.plotter.plotParticles()
