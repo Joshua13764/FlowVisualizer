@@ -6,23 +6,24 @@ from structs import SimFlowFuncs, SimSetupData, ParticleData, PlottingData
 from iterator import iterateParticles
 from plotter import Plotting
 
+
 @dataclass
 class Visualizer():
 
     # The data used to define the flow
-    flowData : SimFlowFuncs
+    flowData: SimFlowFuncs
 
     # The data used to setup how iterations run
-    setupData : SimSetupData
+    setupData: SimSetupData
 
     # The data used to store the particle infomation
-    particleData : ParticleData
+    particleData: ParticleData
 
     # The data used to plot the results
-    plottingData : PlottingData
+    plottingData: PlottingData
 
     # Iterate the particles one step in time
-    def iterate(self, numbIter = 1):
+    def iterate(self, numbIter=1):
 
         # Make record of init particle positions
         self.particleData.markInitPositions()
@@ -37,7 +38,6 @@ class Visualizer():
     # Plot the particles currently
     def plot(self):
 
-        plotter = Plotting(self.flowData, self.particleData, self.plottingData, self.timePast)
+        plotter = Plotting(self.flowData, self.particleData,
+                           self.plottingData, self.timePast)
         plotter.plotParticles()
-
-        

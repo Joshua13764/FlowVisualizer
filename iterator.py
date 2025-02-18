@@ -4,15 +4,17 @@ from structs import SimFlowFuncs, ParticleData, SimSetupData
 
 
 # Helper functions
-_posToPol = lambda x, y : [
-            np.sqrt(x ** 2 + y ** 2),
-            np.arctan2(y, x)
-        ]
+def _posToPol(x, y): return [
+    np.sqrt(x ** 2 + y ** 2),
+    np.arctan2(y, x)
+]
 
-_polToPos = lambda r, theta : np.array([
+
+def _polToPos(r, theta): return np.array([
     r * np.cos(theta),
     r * np.sin(theta)
 ])
+
 
 def _polVeltoCartVel(x, y, vr, vtheta):
 
@@ -25,7 +27,9 @@ def _polVeltoCartVel(x, y, vr, vtheta):
     ]
 
 # Returns an array of poistions from flow data
-def getVelocitiesFromPositions(postions : np.array, flowData : SimFlowFuncs) -> list:
+
+
+def getVelocitiesFromPositions(postions: np.array, flowData: SimFlowFuncs) -> list:
 
     # Velocity in the x, y plane
     cartParticleVelocities = np.zeros(postions.shape)
@@ -36,15 +40,15 @@ def getVelocitiesFromPositions(postions : np.array, flowData : SimFlowFuncs) -> 
     # Cartesian coordinates
     if flowData.vx and flowData.vy:
 
-        cartParticleVelocities[0,:] += flowData.vx(*postions)
-        cartParticleVelocities[1,:] += flowData.vy(*postions)
+        cartParticleVelocities[0, :] += flowData.vx(*postions)
+        cartParticleVelocities[1, :] += flowData.vy(*postions)
 
     # Polar coordinates
     if flowData.vr and flowData.vtheta:
 
         # returns r, theta
-        polarParticleVelocities[0,:] += flowData.vr(*_posToPol(*postions))
-        polarParticleVelocities[1,:] += flowData.vtheta(*_posToPol(*postions))
+        polarParticleVelocities[0, :] += flowData.vr(*_posToPol(*postions))
+        polarParticleVelocities[1, :] += flowData.vtheta(*_posToPol(*postions))
 
     # Mixed coodinates
     if flowData.v:
@@ -62,18 +66,21 @@ def getVelocitiesFromPositions(postions : np.array, flowData : SimFlowFuncs) -> 
         thetaHat = [- y, x] / np.linalg.norm(postions)
 
         # Calculate particleVelocities
-        cartParticleVelocities += flowData.v(x,y,xHat,yHat, r,theta,rHat,thetaHat)
-    
+        cartParticleVelocities += flowData.v(x,
+                                             y, xHat, yHat, r, theta, rHat, thetaHat)
+
     # Return the found velocities
     return cartParticleVelocities, polarParticleVelocities
 
 # Returns an array of poistions from flow data and converts all velocity types to cartesian
-def getVelocitiesFromPositionsCartConverted(postions : np.array, flowData : SimFlowFuncs) -> np.array:
+
+
+def getVelocitiesFromPositionsCartConverted(postions: np.array, flowData: SimFlowFuncs) -> np.array:
 
     # Find new velocities of particles
     cartParticleVelocities, polarParticleVelocities = getVelocitiesFromPositions(
-        postions = postions,
-        flowData = flowData
+        postions=postions,
+        flowData=flowData
     )
 
     # Get overall velocities
@@ -82,28 +89,32 @@ def getVelocitiesFromPositionsCartConverted(postions : np.array, flowData : SimF
 
     return particleVelocities
 
-def iterateParticles(particleData : ParticleData, flowData : SimFlowFuncs, setupData : SimSetupData):
+
+def iterateParticles(particleData: ParticleData, flowData: SimFlowFuncs, setupData: SimSetupData):
 
     # Run for each substep in the iteration
     for substep in range(setupData.subtimeSteps):
 
         # Find new velocities of particles
         cartParticleVelocities, polarParticleVelocities = getVelocitiesFromPositions(
-            postions = particleData.particlePositions,
-            flowData = flowData
+            postions=particleData.particlePositions,
+            flowData=flowData
         )
 
         # Iterate the cartesian positions
-        particleData.particlePositions += cartParticleVelocities * ( setupData.timeStep / setupData.subtimeSteps)
+        particleData.particlePositions += cartParticleVelocities * \
+            (setupData.timeStep / setupData.subtimeSteps)
 
         # Iterate the Polar coordinates
-        if flowData.vr and flowData.vtheta: # Use if for performance
+        if flowData.vr and flowData.vtheta:  # Use if for performance
             particlePositionsPolar = _posToPol(*particleData.particlePositions)
-            particlePositionsPolar += polarParticleVelocities * ( setupData.timeStep / setupData.subtimeSteps)
+            particlePositionsPolar += polarParticleVelocities * \
+                (setupData.timeStep / setupData.subtimeSteps)
             particleData.particlePositions = _polToPos(*particlePositionsPolar)
 
         # Get overall velocities
         particleData.particleVelocities = cartParticleVelocities
 
-        if flowData.vr and flowData.vtheta: # Use if for performance
-            particleData.particleVelocities += _polVeltoCartVel(*particleData.particlePositions, *polarParticleVelocities)
+        if flowData.vr and flowData.vtheta:  # Use if for performance
+            particleData.particleVelocities += _polVeltoCartVel(
+                *particleData.particlePositions, *polarParticleVelocities)

@@ -2,10 +2,11 @@ from dataclasses import dataclass
 
 import numpy as np
 
+
 @dataclass
 class SimFlowFuncs():
 
-    ## Placeholder variables for the fields (Eulerian specification of the flow field)
+    # Placeholder variables for the fields (Eulerian specification of the flow field)
 
     # Cartesian coordinates (in terms of x, y)
     vx = None
@@ -18,74 +19,81 @@ class SimFlowFuncs():
     # Vector flow function (in terms of x, y, r, theta, xHat, yHat, rHat, thetaHat)
     v = None
 
+
 @dataclass
 class SimSetupData():
 
-    ## Simulation variables
-    timeStep : float
+    # Simulation variables
+    timeStep: float
     subtimeSteps = 32
+
 
 @dataclass
 class ParticleData():
 
-    ## Particle positions, velocity, mass (so can add drifing effects)
-    particlePositions = np.array([[],[]])
-    particleVelocities = np.array([[],[]])
+    # Particle positions, velocity, mass (so can add drifing effects)
+    particlePositions = np.array([[], []])
+    particleVelocities = np.array([[], []])
     particleMasses = np.array([])
 
     # Array of the index of the first particle in a shape used to draw the shapes correctly
     shapeStarts = []
-    
-    ## Create the post init vars
+
+    # Create the post init vars
     def markInitPositions(self):
         self.particleInitPositions = self.particlePositions.copy()
 
     # Giving adding dye functionality
-    def __add__(self, other): #  particleData1 + particleData2
+    def __add__(self, other):  # particleData1 + particleData2
 
-        if type(other) != ParticleData: return TypeError
+        if type(other) != ParticleData:
+            return TypeError
 
         # If no items in self then set self to the added item
-        if self.particlePositions.size == 0: self = other
+        if self.particlePositions.size == 0:
+            self = other
 
         # If no items in other then no effect
-        if other.particlePositions.size == 0: return self
+        if other.particlePositions.size == 0:
+            return self
 
         # Positions
         self.particlePositions = np.concatenate(
             (self.particlePositions,
-            other.particlePositions),
-            axis = 1
+             other.particlePositions),
+            axis=1
         )
 
         # Velocity
         self.particleVelocities = np.concatenate(
             (self.particleVelocities,
-            other.particleVelocities),
-            axis = 1
+             other.particleVelocities),
+            axis=1
         )
 
         # Masses
         self.particleMasses = np.concatenate(
             (self.particleMasses,
-            other.particleMasses),
-            axis = 1
+             other.particleMasses),
+            axis=1
         )
 
         # Shape starts
         shapeStartOffset = len(self.shapeStarts) - 1
-        self.shapeStarts += [shapeStart + shapeStartOffset for shapeStart in other.shapeStarts]
+        self.shapeStarts += [shapeStart +
+                             shapeStartOffset for shapeStart in other.shapeStarts]
 
         return self
 
-    def __iadd__(self, other): #  particleData1 += particleData2
-        
+    def __iadd__(self, other):  # particleData1 += particleData2
+
         return self.__add__(other)
+
 
 @dataclass
 class PlottingData():
 
-    ## Flags
+    # Flags
 
     # General flags
     includeGird = False
@@ -102,17 +110,17 @@ class PlottingData():
     plotInitPoints = True
     plotFinalPoints = True
 
-    ## Save settings
+    # Save settings
     plotFolderFormat = "%Y-%m-%d %HH"
     plotFileFormat = "%Y-%m-%d %HH%MM%SS"
     plotSaveType = "png"
 
-    ## Plot dimentions
+    # Plot dimentions
     plotSimWidth = 4
     plotSimHeight = 4
-    plotCenter = np.array([0,0])
+    plotCenter = np.array([0, 0])
 
-    ## Plot streamlines
+    # Plot streamlines
     flowMapResolution = 300
     brokenStreamlines = False
     cmap = 'autumn'
@@ -121,6 +129,6 @@ class PlottingData():
     minVelocity = -10
     streamLinesPlotDensity = 0.5
 
-    ## Plotting axis labels
+    # Plotting axis labels
     xLabel = "x"
     yLabel = "y"
