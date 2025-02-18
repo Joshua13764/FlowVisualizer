@@ -1,4 +1,7 @@
 import matplotlib.pyplot as plt
+from matplotlib.widgets import Slider
+import mpl_interactions.ipyplot as iplt
+
 from dataclasses import dataclass
 from time import gmtime, strftime
 import os
@@ -20,9 +23,6 @@ class Plotting():
 
     # The data used to aid with plot formatting
     plottingData: PlottingData
-
-    # The time passed in seconds since simulation start
-    timePast: np.float64
 
     # Pre-processing step auto run after init
     def __post_init__(self):
@@ -100,46 +100,74 @@ class Plotting():
         # Save the plot
         plt.savefig(fname=plotPath, dpi=800)
 
-    def plotParticles(self):
+    def plotParticles(self, streamlineWidth=2, args: dict = {}):
+
+        # Functions used for the interactive plotter
+        def f_x(time):
+            return self.particleData.positionsAtTime(int(time // args['timeStep']), args['visualizer'])[0]
+
+        def f_y(_, time):
+            return self.particleData.positionsAtTime(int(time // args['timeStep']), args['visualizer'])[1]
 
         # Setting up how streamlines are plotted
 
         # Pre-calculations
-        x, y, u, v = self._getFlowMap()
-        flowSpeed = np.sqrt(u**2 + v**2)
-        streamLineWidth = 2 * flowSpeed / np.max(flowSpeed)
+        x, y, v_x, v_y = self._getFlowMap()
+        flowSpeed = np.sqrt(v_x**2 + v_y**2)
+        # Faster flow -> Thicker line
+        streamlineWidth *= flowSpeed / np.max(flowSpeed)
 
-        # Finding flow speeds
-        flowSpeed = np.sqrt(u**2 + v**2)
-        streamLineWidth = 0.75 * flowSpeed / np.max(flowSpeed)
+        fig, ax = plt.subplots()
+        plt.subplots_adjust(bottom=0.25)
 
         # Plotting streamlines
-        stream = plt.streamplot(x, y, u, v,
+        stream = plt.streamplot(x, y, v_x, v_y,
                                 density=self.plottingData.streamLinesPlotDensity,
-                                linewidth=streamLineWidth,
+                                linewidth=streamlineWidth,
                                 broken_streamlines=self.plottingData.brokenStreamlines,
                                 color="k"
                                 )
 
-        # Setting how points are plotted
+        # Interactive slider setup
+        if args:
+            axfreq = plt.axes([0.15, 0.1, 0.65, 0.03])
+            slider = Slider(axfreq,
+                            label="Time",
+                            valmin=self.plottingData.timeSteps_range[0],
+                            valmax=self.plottingData.timeSteps_range[1] *
+                            args['timeStep'],
+                            valstep=args['timeStep'],
+                            valinit=0)
 
         # Plotting the line data
         if self.plottingData.plotInitLine:
-            plt.plot(*self.particleData.particleInitPositions,
+            plt.plot(*self.particleData.positions[0],
                      label=f"Inital dye")
 
         if self.plottingData.plotFinalLine:
-            plt.plot(*self.particleData.particlePositions,
-                     label=f"Dye line after {self.timePast}s")
+            if not args:
+                plt.plot(*self.particleData.positions[-1],
+                         label=f"Dye line after {self.particleData.timePast()}s")
+            else:
+
+                controls = iplt.plot(f_x, f_y,
+                                     label=f"Dye line after {self.particleData.timePast()}s",
+                                     time=slider, ax=ax)
 
         # Plotting the scattering data
         if self.plottingData.plotInitPoints:
-            plt.scatter(*self.particleData.particleInitPositions,
+            plt.scatter(*self.particleData.positions[0],
                         marker=",", c="g", s=1, label="Inital dye")
 
         if self.plottingData.plotFinalPoints:
-            plt.scatter(*self.particleData.particlePositions, marker=",",
-                        c="r", s=1, label=f"Dye after {self.timePast}s")
+            if not args:
+                plt.scatter(*self.particleData.positions[-1], marker=",",
+                            c="r", s=1, label=f"Dye after {self.particleData.timePast()}s")
+            else:
+                controls = iplt.scatter(f_x, f_y,
+                                        marker=",", c="r", s=1,
+                                        label=f"Dye line after {self.particleData.timePast()}s",
+                                        time=slider, ax=ax)
 
         # Setting plot features
 

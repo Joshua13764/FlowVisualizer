@@ -32,62 +32,67 @@ class SimSetupData():
 class ParticleData():
 
     # Particle positions, velocity, mass (so can add drifing effects)
-    particlePositions = np.array([[], []])
-    particleVelocities = np.array([[], []])
-    particleMasses = np.array([])
+    positions = np.array([[[], []]])
+    velocities = np.array([[], []])
+    masses = np.array([])
 
     # Array of the index of the first particle in a shape used to draw the shapes correctly
     shapeStarts = []
 
-    # Create the post init vars
-    def markInitPositions(self):
-        self.particleInitPositions = self.particlePositions.copy()
+    def positionsAtTime(self, index: int, visualizer: object):
+        if index >= self.positions.shape[1]:
+            # We havent yet reached this point, need to calculate the positions at that time
+            visualizer.iterate(numIter=index - self.positions.shape[1] + 2)
+        return self.positions[index]
+
+    def timePast(self):
+        return self.positions.shape[1]
 
     # Giving adding dye functionality
-    def __add__(self, other):  # particleData1 + particleData2
+    def __add__(self, new_particle):  # particleData1 + particleData2
 
-        if type(other) != ParticleData:
+        if type(new_particle) != ParticleData:
             return TypeError
 
         # If no items in self then set self to the added item
-        if self.particlePositions.size == 0:
-            self = other
+        if self.positions.size == 0:
+            self = new_particle
 
-        # If no items in other then no effect
-        if other.particlePositions.size == 0:
+        # If no items in new_particle then no effect
+        if new_particle.positions.size == 0:
             return self
 
         # Positions
-        self.particlePositions = np.concatenate(
-            (self.particlePositions,
-             other.particlePositions),
-            axis=1
+        self.positions = np.concatenate(
+            (self.positions,
+             new_particle.positions),
+            axis=2
         )
 
         # Velocity
-        self.particleVelocities = np.concatenate(
-            (self.particleVelocities,
-             other.particleVelocities),
+        self.velocities = np.concatenate(
+            (self.velocities,
+             new_particle.velocities),
             axis=1
         )
 
         # Masses
-        self.particleMasses = np.concatenate(
-            (self.particleMasses,
-             other.particleMasses),
+        self.masses = np.concatenate(
+            (self.masses,
+             new_particle.masses),
             axis=1
         )
 
         # Shape starts
         shapeStartOffset = len(self.shapeStarts) - 1
         self.shapeStarts += [shapeStart +
-                             shapeStartOffset for shapeStart in other.shapeStarts]
+                             shapeStartOffset for shapeStart in new_particle.shapeStarts]
 
         return self
 
-    def __iadd__(self, other):  # particleData1 += particleData2
+    def __iadd__(self, new_particle):  # particleData1 += particleData2
 
-        return self.__add__(other)
+        return self.__add__(new_particle)
 
 
 @dataclass
@@ -132,3 +137,6 @@ class PlottingData():
     # Plotting axis labels
     xLabel = "x"
     yLabel = "y"
+
+    # Interactive plot settings
+    timeSteps_range = (0, 100)
