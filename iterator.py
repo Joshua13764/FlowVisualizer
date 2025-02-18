@@ -80,6 +80,7 @@ def getVelocitiesFromPositionsCartConverted(postions: np.array, flowData: SimFlo
 
     # Find new velocities of particles
     cartParticleVelocities, polarParticleVelocities = getVelocitiesFromPositions(
+
         positions=postions,
         flowData=flowData
     )
@@ -89,7 +90,6 @@ def getVelocitiesFromPositionsCartConverted(postions: np.array, flowData: SimFlo
     particleVelocities += _polVeltoCartVel(*postions, *polarParticleVelocities)
 
     return particleVelocities
-
 
 def iterateParticles(particleData: ParticleData, flowData: SimFlowFuncs, setupData: SimSetupData):
 
