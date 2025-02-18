@@ -39,7 +39,7 @@ class Visualizer():
     # Plot the particles currently
     def plot(self, interactive=False):
         if interactive:
-            self.plotter.plotParticles(args={'interactive': True,
+            self.plotter.plotInteractiveParticles(args={'interactive': True,
                                              'timeStep': self.setupData.timeStep,
                                              'visualizer': self})
         else:
