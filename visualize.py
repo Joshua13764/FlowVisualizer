@@ -31,7 +31,6 @@ class Visualizer():
     # Iterate the particles one step in time
     def iterate(self, numIter=1):
 
-        # TODO: @Joshua13764 Each loop takes ~ 500ms to run! This needs to be optimised!
         for _ in range(numIter):
 
             iterateParticles(self.particleData, self.flowData, self.setupData)

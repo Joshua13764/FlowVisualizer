@@ -34,9 +34,9 @@ class Plotting():
             self.plottingData.plotSimWidth * 0.5
 
         self.yMin = self.plottingData.plotCenter[1] - \
-            self.plottingData.plotSimWidth * 0.5
+            self.plottingData.plotSimHeight * 0.5
         self.yMax = self.plottingData.plotCenter[1] + \
-            self.plottingData.plotSimWidth * 0.5
+            self.plottingData.plotSimHeight * 0.5
 
     # Gets an array of flow data (used by stream plots)
     def _getFlowMap(self):
@@ -178,7 +178,7 @@ class Plotting():
         if self.plottingData.showFigure:
             plt.show()
 
-    def plotParticles(self, streamlineWidth=2):
+    def plotParticles(self, streamlineWidth=4):
 
         # Setting up how streamlines are plotted
 
@@ -188,8 +188,18 @@ class Plotting():
         # Faster flow -> Thicker line
         streamlineWidth *= flowSpeed / np.max(flowSpeed)
 
-        fig, ax = plt.subplots()
-        plt.subplots_adjust(bottom=0.25)
+        # fig, ax = plt.subplots()
+        # plt.subplots_adjust(bottom=0.25)
+
+        # Create a custom figsize
+        if self.plottingData.plotSimWidth >= self.plottingData.plotSimHeight:
+            aspect = self.plottingData.plotSimWidth / self.plottingData.plotSimHeight
+            customFigSize = (aspect * 5, 5)
+        else:
+            aspect = self.plottingData.plotSimHeight / self.plottingData.plotSimWidth
+            customFigSize = (5, 5 * aspect)
+
+        plt.figure(figsize=customFigSize, dpi=200)
 
         # Plotting streamlines
         stream = plt.streamplot(x, y, v_x, v_y,
@@ -232,6 +242,13 @@ class Plotting():
             plt.xlabel(self.plottingData.xLabel)
         if self.plottingData.includeYLabel:
             plt.ylabel(self.plottingData.yLabel)
+
+        # ax = plt.gca()
+        # ax.set_aspect('equal', adjustable='box')
+
+        # plt.axis('scaled')
+        # plt.axis('square')
+        plt.tight_layout()
 
         # Save and showing plot settings
         if self.plottingData.saveFigure:

@@ -127,7 +127,7 @@ class PlottingData():
     includeXLabel = True
     includeYLabel = True
 
-    saveFigure = False
+    saveFigure = True
     showFigure = True
 
     # Data plotting flags

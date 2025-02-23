@@ -27,6 +27,12 @@ dye.lineDye(np.array([1, -1]), np.array([-1, 1]), 1000, 0)
 # dye.rectangleDye(0.2, 0.2, np.array([0.2,0.3]), 10000, 0)
 # dye.circleDye(np.array([-0.2, -0.3]), 0.1, 10000, 0)
 
+# Define the plotting data
+pd = visualize.PlottingData()
+pd.plotCenter = np.array([1,0])
+pd.plotSimWidth = 1
+pd.plotSimHeight = 1
+
 # Setup the flow sim object
 flowSim = visualize.Visualizer(
     setupData=visualize.SimSetupData(timeStep=0.05),
